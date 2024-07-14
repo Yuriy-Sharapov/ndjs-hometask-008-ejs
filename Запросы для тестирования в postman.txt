@@ -1,0 +1,34 @@
+1. Авториязация пользователя 
+
+POST http://localhost:3000/api/user/login
+
+2. Получить все книги
+
+GET http://localhost:3000/api/books
+
+3. Получить книгу по ID
+
+GET http://localhost:3000/api/books/975b59da-921b-493d-93a2-0d15ed754135
+
+4. Создать книгу
+
+POST http://localhost:3000/api/books
+Передать атрибуты в формате json в Body/Raw
+
+5. Редактировать книгу по ID
+
+PUT http://localhost:3000/api/books/3e6c1b46-9527-47d4-a359-04786d2723b9
+Передать атрибуты в формате json в Body/Raw
+
+6. Удалить книгу по ID
+
+DELETE http://localhost:3000/api/books/3e6c1b46-9527-47d4-a359-04786d2723b9
+
+7. Загрузить книгу в хранилище
+
+POST http://localhost:3000/api/upload-book
+Key smb-book
+
+8. Скачать книгу из хранилища
+
+http://localhost:3000/api/books/Макконнелл «Совершенный код».pdf/download
