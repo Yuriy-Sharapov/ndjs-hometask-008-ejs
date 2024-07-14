@@ -7,6 +7,8 @@ const uploaderRouter = require('./routes/uploader')
 
 const app = express()
 app.use(express.json())   
+app.use(express.urlencoded())
+app.set('view engine', 'ejs')
 
 app.use('/api', userRouter)
 app.use('/api', booksRouter)
