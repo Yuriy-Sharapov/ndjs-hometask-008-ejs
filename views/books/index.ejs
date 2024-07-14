@@ -2,7 +2,6 @@
 <%- include('../port/menu') %>
 
 <h1><%= title %></h1>
-<!-- <a class="btn btn-sm btn-primary" href="www.yandex.ru">Добавить книгу</a> -->
 <a class="btn btn-sm btn-primary" href="books/create">Добавить книгу</a>
 
     <% if(books.length) { %>
@@ -35,6 +34,11 @@
                                     <i class="fa fa-trash" aria-hidden="true"></i>
                                 </button>
                             </form>
+                            <form action="/books/<%= el.id %>/download" method="GET" class="d-inline">
+                                <button class="btn btn-sm btn-warning">
+                                    <i class="fa fa-download" aria-hidden="true"></i>
+                                </button>
+                            </form>                            
                         </td>
                     </tr>
                 <% }) %>

@@ -48,12 +48,12 @@ router.get('/books/:id', (req, res) => {
     const idx = books.findIndex( el => el.id === id)
 
     if (idx === -1)
-        res.redirect('/404');
+        res.redirect('/404')
         
     res.render("books/view", {
         title: "Просмотреть карточку книги",
-        book: books[idx],
-    });
+        book: books[idx]
+    })
 })
 
 // 4. редактировать книгу по ID
@@ -126,10 +126,11 @@ router.get('/books/:id/download', (req, res) => {
     
     // Ищем книгу в хранилище по названию, которое передали через параметры
     // В хранилище книга должна иметь сответствующее название fileName
-    const idx = books.findIndex( el => el.fileName === id)    
+    const idx = books.findIndex( el => el.id === id)    
     
-    if (idx == -1)
-        return res.status(404).send('Книга не найдена')
+    if (idx === -1)
+        return res.redirect('/404');
+        // return res.status(404).send('Книга не найдена')
     
     // Формируем путь до книги
     const filePath = path.resolve(__dirname, "..", books[idx].fileBook)
@@ -137,7 +138,8 @@ router.get('/books/:id/download', (req, res) => {
     // Проверка, существует ли файл
     fs.access(filePath, fs.constants.F_OK, (err) => {
         if (err) 
-            return res.status(404).send('Файл не найден')
+            return res.redirect('/404');
+            // return res.status(404).send('Файл не найден')
 
         // Отправка файла на скачивание
         res.download(filePath, err => {
