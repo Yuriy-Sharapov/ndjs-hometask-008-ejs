@@ -1,5 +1,4 @@
 const express = require('express')
-
 const router = express.Router()
 module.exports = router
 
@@ -9,14 +8,36 @@ const path = require('path');
 const stor = require('../storage/storage')
 const cBook = require('../classes/cBook')
 
-// 2. получить все книги
+// 1. получить все книги
 router.get('/books', (req, res) => {
 
     // получаем массив всех книг
     const {books} = stor
-    //res.status(200)
-    res.json(books)
+
+    res.render("books/index", {
+        title: "Список книг",
+        books: books,
+    });    
 }) 
+
+// 2. создать книгу
+router.get('/books/create', (req, res) => {
+    res.render("books/create", {
+        title: "Добавить новую книгу",
+        book: {}
+    })
+})
+
+router.post('/books/create', (req, res) => {
+    // создаём книгу и возвращаем её же вместе с присвоенным ID
+    const {title, description, authors, favorite, fileCover, fileName, fileBook} = req.body
+    const newBook = new cBook(title, description, authors, favorite, fileCover, fileName, fileBook)
+
+    const {books} = stor
+    books.push(newBook)
+    
+    res.redirect('/books')
+})
 
 // 3. получить книгу по ID
 router.get('/books/:id', (req, res) => {
@@ -26,85 +47,78 @@ router.get('/books/:id', (req, res) => {
     const {id} = req.params
     const idx = books.findIndex( el => el.id === id)
 
-    if (idx !== -1){
-        //res.status(200)
-        res.json(books[idx])
-    }
-    else{
-        res.status(404)
-        res.json("Книга не найдена")
-    }
-})
-
-// 4. создать книгу
-router.post('/books', (req, res) => {
-    // создаём книгу и возвращаем её же вместе с присвоенным ID
-    const {title, description, authors, favorite, fileCover, fileName, fileBook} = req.body
-    const newBook = new cBook(title, description, authors, favorite, fileCover, fileName, fileBook)
-
-    const {books} = stor
-    books.push(newBook)
+    if (idx === -1)
+        res.redirect('/404');
         
-    res.status(201)
-    res.json(newBook)
+    res.render("books/view", {
+        title: "Просмотреть карточку книги",
+        book: books[idx],
+    });
 })
 
-// 5. редактировать книгу по ID
-router.put('/books/:id', (req, res) => {
+// 4. редактировать книгу по ID
+router.get('/books/update/:id', (req, res) => {
     // редактируем объект книги, если запись не найдена, вернём Code: 404
     const {books} = stor
     const {id} = req.params
     const idx = books.findIndex( el => el.id === id)
 
-    if (idx !== -1){
+    if (idx === -1)
+        res.redirect('/404');
 
-        const {title, description, authors, favorite, fileCover, fileName} = req.body
-        books[idx].title       = title
-        books[idx].description = description
-        books[idx].authors     = authors
-        books[idx].favorite    = favorite
-        books[idx].fileCover   = fileCover
-        books[idx].fileName    = fileName
- 
-        //res.status(200)
-        res.json(books[idx])
-    }
-    else{
-        res.status(404)
-        res.json("Книга не найдена")
-    }    
+    res.render("books/update", {
+        title: "Редактирование атрибутов книги",
+        book: books[idx],
+    })
 })
 
-// 6. удалить книгу по ID
-router.delete('/books/:id', (req, res) => {
+router.post('/books/update/:id', (req, res) => {
+    // редактируем объект книги, если запись не найдена, вернём Code: 404
+    const {books} = stor
+    const {id} = req.params
+    const idx = books.findIndex( el => el.id === id)
+
+    if (idx === -1)
+        res.redirect('/404')
+
+    const {title, description, authors, favorite, fileCover, fileName, fileBook} = req.body
+
+    books[idx] = {
+        ...books[idx],
+        title,
+        description,
+        authors,
+        favorite,
+        fileCover,
+        fileName,
+        fileBook
+    }
+    // books[idx].title       = title
+    // books[idx].description = description
+    // books[idx].authors     = authors
+    // books[idx].favorite    = favorite
+    // books[idx].fileCover   = fileCover
+    // books[idx].fileName    = fileName
+    // books[idx].fileBook    = fileBook
+
+    res.redirect(`/books/${id}`);
+})
+
+// 5. удалить книгу по ID
+router.post('/books/delete/:id', (req, res) => {
     // удаляем книгу и возвращаем ответ: 'ok'
     const {books} = stor
     const {id} = req.params
     const idx = books.findIndex( el => el.id === id)
 
-    if (idx !== -1){
-        books.splice(idx, 1)
-        //res.status(200)
-        res.json("ok")
-    }
-    else{
-        res.status(404)
-        res.json("Книга не найдена") 
-    }    
+    if (idx === -1)
+        res.redirect('/404');
+
+    books.splice(idx, 1)
+    res.redirect(`/books`);    
 })   
 
-// Скачать книгу
-// router.get('/books/:id/download', (req, res) => {
-
-//     const {id} = req.params
-//     const fullname = `${__dirname}\\..\\public\\books\\${id}`
-//     //res.json(fullname)
-
-//     const fixpath = `D:\\Юра\\Работа\\Гринатом\\NodeJS\\007 - middleware\\ndjs-hometask-007-middleware\\public\\${id}`
-//     res.json(fixpath)
-//     //express.static(fixpath) // даем возможность пользователю скачать файл
-// }) 
-
+// 6. Скачать книгу
 router.get('/books/:id/download', (req, res) => {
 
     const {books} = stor

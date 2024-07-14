@@ -2,6 +2,7 @@
 <%- include('../port/menu') %>
 
 <h1><%= title %></h1>
+<!-- <a class="btn btn-sm btn-primary" href="www.yandex.ru">Добавить книгу</a> -->
 <a class="btn btn-sm btn-primary" href="books/create">Добавить книгу</a>
 
     <% if(books.length) { %>
@@ -11,12 +12,7 @@
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">Заголовок</th>
-                <th scope="col">Описание</th>
                 <th scope="col">Авторы</th>
-                <th scope="col">Рекомендуемая</th>
-                <th scope="col">Полный путь</th>
-                <th scope="col">Название файла</th>
-                <th scope="col">Полный путь 2</th>
                 <th scope="col"></th>
             </tr>
             </thead>
@@ -26,20 +22,15 @@
                     <tr>
                         <th scope="row"><%= idx + 1 %></th>
                         <td><%= el.title %></td>
-                        <td><%= el.description %></td>
-                        <td><%= el.authors   %></td>
-                        <td><%= el.favorite  %></td>
-                        <td><%= el.fileCover %></td>
-                        <td><%= el.fileName  %></td>
-                        <td><%= el.fileBook  %></td>	
+                        <td><%= el.authors %></td>
                         <td class="text-right">
-                            <a class="btn btn-sm btn-success" href="/api/books/<%= el.id %>">
+                            <a class="btn btn-sm btn-success" href="/books/<%= el.id %>">
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                             </a>
-                            <a class="btn btn-sm btn-primary" href="/api/books/update/<%= el.id %>">
+                            <a class="btn btn-sm btn-primary" href="/books/update/<%= el.id %>">
                                 <i class="fa fa-pencil" aria-hidden="true"></i>
                             </a>
-                            <form action="/api/books/delete/<%= el.id %>" method="POST" class="d-inline">
+                            <form action="/books/delete/<%= el.id %>" method="POST" class="d-inline">
                                 <button class="btn btn-sm btn-danger">
                                     <i class="fa fa-trash" aria-hidden="true"></i>
                                 </button>
